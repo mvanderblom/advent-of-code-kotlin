@@ -59,7 +59,7 @@ class Day01 : AbstractDay() {
     @Test
     fun `0-1=0`() {
         assertThat(partTwo(listOf("L1"), 0))
-            .isEqualTo(1)
+            .isEqualTo(0)
     }
 
     @Test
@@ -113,13 +113,13 @@ class Day01 : AbstractDay() {
     @Test
     fun `left on boundary`() {
         assertThat(partTwo(listOf("L9"), 9))
-            .isEqualTo(0)
+            .isEqualTo(1)
     }
 
     @Test
     fun `left on boundary twice`() {
         assertThat(partTwo(listOf("L109"), 9))
-            .isEqualTo(1)
+            .isEqualTo(2)
     }
 
     @Test
@@ -149,7 +149,7 @@ class Day01 : AbstractDay() {
     @Test
     fun `start at 0`() {
         assertThat(partTwo(listOf("L1"), 0))
-            .isEqualTo(1)
+            .isEqualTo(0)
         assertThat(partTwo(listOf("R1"), 0))
             .isEqualTo(0)
     }
@@ -162,44 +162,42 @@ class Day01 : AbstractDay() {
 
     @Test
     fun `dafuq`() {
-        assertThat(partTwo(listOf("L55"), 55))
-            .isEqualTo(0)
+        assertThat(partTwo(listOf("R48", "L5"), 52))
+            .isEqualTo(1)
     }
 
     private fun partTwo(input: List<String>, initialDialPos: Int = 50): Int {
         val operations = parseInput(input)
-
+        println("The dial starts by pointing at $initialDialPos.")
         var dialPos = initialDialPos
         var zeroCount = 0
 
         operations.forEachIndexed { index, operation ->
             val i = if (operation < 0) -1 else 1
+
+            var zeroCountDelta = 0
+
             repeat(abs(operation)) {
                 dialPos += 1 * i
                 if (dialPos == -1) {
-                    zeroCount++
                     dialPos = 99
                 }
                 if (dialPos == 100) {
-                    zeroCount++
                     dialPos = 0
                 }
+                if (dialPos == 0)
+                    zeroCountDelta++
             }
-            println("${index.toString(4)}: ${dialPos.toString(4)} + ${operation.toString(4)} = ${dialPos.toString(4)}, zeroCount=$zeroCount")
+            zeroCount += zeroCountDelta
 
-//            val newDialPos = dialPos + operation
-//            val newDialPosMod100 = abs((newDialPos + 100) % 100)
-//
-//            val range = if(dialPos < newDialPos) dialPos..newDialPos else newDialPos..dialPos
-//            val zeroCountDelta = range //
-//                .count { it % 100 == 0 }
-//                .let { if(dialPos == 0) it - 1 else it }
-//
-//            zeroCount += zeroCountDelta
+            print(
+                "The dial is rotated $operation " +
+                        "to point at $dialPos; "
+            )
 
-//            println("${index.toString(4)}: ${dialPos.toString(4)} + ${operation.toString(4)} = ${newDialPosMod100.toString(4)}, zeroCount=$zeroCount")
-
-//            dialPos = newDialPosMod100
+            if (zeroCountDelta > 0)
+                print("zeroCountDelta: $zeroCountDelta, zeroCount: $zeroCount")
+            println()
         }
         return zeroCount
     }
