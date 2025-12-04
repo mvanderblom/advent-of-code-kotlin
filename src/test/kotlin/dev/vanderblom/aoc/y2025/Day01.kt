@@ -35,7 +35,7 @@ class Day01 : AbstractDay() {
     @Order(4)
     fun `part two - actual`() {
         assertThat(partTwo(actualInput))
-            .isEqualTo(7058)
+            .isEqualTo(6819)
         // 7596
         // 7404
         // 5823
@@ -59,7 +59,7 @@ class Day01 : AbstractDay() {
     @Test
     fun `0-1=0`() {
         assertThat(partTwo(listOf("L1"), 0))
-            .isEqualTo(0)
+            .isEqualTo(1)
     }
 
     @Test
@@ -111,13 +111,13 @@ class Day01 : AbstractDay() {
     @Test
     fun `left on boundary`() {
         assertThat(partTwo(listOf("L9"), 9))
-            .isEqualTo(1)
+            .isEqualTo(0)
     }
 
     @Test
     fun `left on boundary twice`() {
         assertThat(partTwo(listOf("L109"), 9))
-            .isEqualTo(2)
+            .isEqualTo(1)
     }
 
     @Test
@@ -147,7 +147,7 @@ class Day01 : AbstractDay() {
     @Test
     fun `start at 0`() {
         assertThat(partTwo(listOf("L1"), 0))
-            .isEqualTo(0)
+            .isEqualTo(1)
         assertThat(partTwo(listOf("R1"), 0))
             .isEqualTo(0)
     }
@@ -171,23 +171,46 @@ class Day01 : AbstractDay() {
         var zeroCount = 0
 
         operations.forEachIndexed { index, operation ->
-            val newDialPos = dialPos + operation
-            val newDialPosMod100 = abs((newDialPos + 100) % 100)
-
-            val range = if(dialPos < newDialPos) dialPos..newDialPos else newDialPos..dialPos
-            val zeroCountDelta = range //
-                .filter { it % 100 == 0 }
-                .showMe { if(it.isNotEmpty()) println(it) else println("empty") }
-                .count()
-                .let { if(dialPos == 0) it - 1 else it }
-
-            zeroCount += zeroCountDelta
-
-            if(newDialPos < 0 || newDialPos > 99) {
-                println("${index.toString(4)}: ${dialPos.toString(4)} + ${operation.toString(4)} = ${newDialPosMod100.toString(4)}, zeroCount=$zeroCount")
+            if(operation < 0) {
+               repeat(abs(operation)) {
+                   dialPos -= 1
+                   if(dialPos == -1) {
+                       zeroCount++
+                       dialPos = 99
+                   }
+                   if(dialPos == 100) {
+                       zeroCount++
+                       dialPos = 0
+                   }
+               }
+            } else {
+                repeat(abs(operation)) {
+                    dialPos += 1
+                    if(dialPos == -1) {
+                        zeroCount++
+                        dialPos = 99
+                    }
+                    if(dialPos == 100) {
+                        zeroCount++
+                        dialPos = 0
+                    }
+                }
             }
+            println("${index.toString(4)}: ${dialPos.toString(4)} + ${operation.toString(4)} = ${dialPos.toString(4)}, zeroCount=$zeroCount")
 
-            dialPos = newDialPosMod100
+//            val newDialPos = dialPos + operation
+//            val newDialPosMod100 = abs((newDialPos + 100) % 100)
+//
+//            val range = if(dialPos < newDialPos) dialPos..newDialPos else newDialPos..dialPos
+//            val zeroCountDelta = range //
+//                .count { it % 100 == 0 }
+//                .let { if(dialPos == 0) it - 1 else it }
+//
+//            zeroCount += zeroCountDelta
+
+//            println("${index.toString(4)}: ${dialPos.toString(4)} + ${operation.toString(4)} = ${newDialPosMod100.toString(4)}, zeroCount=$zeroCount")
+
+//            dialPos = newDialPosMod100
         }
         return zeroCount
     }
