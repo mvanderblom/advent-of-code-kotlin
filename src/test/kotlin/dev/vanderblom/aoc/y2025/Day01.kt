@@ -50,7 +50,7 @@ class Day01 : AbstractDay() {
         var zeroCount = 0
         operations.forEach {
             dial = (dial + it + 100) % 100
-            if(dial == 0) zeroCount++
+            if (dial == 0) zeroCount++
         }
         return zeroCount
 
@@ -97,11 +97,13 @@ class Day01 : AbstractDay() {
         assertThat(partTwo(listOf("R1"), 99))
             .isEqualTo(1)
     }
+
     @Test
     fun `99+100=1`() {
         assertThat(partTwo(listOf("R100"), 99))
             .isEqualTo(1)
     }
+
     @Test
     fun `99+101=2`() {
         assertThat(partTwo(listOf("R101"), 99))
@@ -160,8 +162,8 @@ class Day01 : AbstractDay() {
 
     @Test
     fun `dafuq`() {
-        assertThat(partTwo(listOf("R1000"), 50))
-            .isEqualTo(10)
+        assertThat(partTwo(listOf("L55"), 55))
+            .isEqualTo(0)
     }
 
     private fun partTwo(input: List<String>, initialDialPos: Int = 50): Int {
@@ -171,29 +173,16 @@ class Day01 : AbstractDay() {
         var zeroCount = 0
 
         operations.forEachIndexed { index, operation ->
-            if(operation < 0) {
-               repeat(abs(operation)) {
-                   dialPos -= 1
-                   if(dialPos == -1) {
-                       zeroCount++
-                       dialPos = 99
-                   }
-                   if(dialPos == 100) {
-                       zeroCount++
-                       dialPos = 0
-                   }
-               }
-            } else {
-                repeat(abs(operation)) {
-                    dialPos += 1
-                    if(dialPos == -1) {
-                        zeroCount++
-                        dialPos = 99
-                    }
-                    if(dialPos == 100) {
-                        zeroCount++
-                        dialPos = 0
-                    }
+            val i = if (operation < 0) -1 else 1
+            repeat(abs(operation)) {
+                dialPos += 1 * i
+                if (dialPos == -1) {
+                    zeroCount++
+                    dialPos = 99
+                }
+                if (dialPos == 100) {
+                    zeroCount++
+                    dialPos = 0
                 }
             }
             println("${index.toString(4)}: ${dialPos.toString(4)} + ${operation.toString(4)} = ${dialPos.toString(4)}, zeroCount=$zeroCount")
@@ -213,18 +202,6 @@ class Day01 : AbstractDay() {
 //            dialPos = newDialPosMod100
         }
         return zeroCount
-    }
-
-    data class State(val dial: Int = 50, val zeroCount: Int = 0, val prevState: State? = null)
-
-    fun stateTransition(state: State, operation: Int): State {
-        val newDialPosition = state.dial + operation
-        val newZeroCount = if (newDialPosition !in 1..99) {
-            state.zeroCount + abs(operation / 100) + if (state.dial == 0) 0 else 1
-        } else {
-            state.zeroCount
-        }
-        return State(newDialPosition, newZeroCount, state)
     }
 
     private fun parseInput(input: List<String>): List<Int> {
