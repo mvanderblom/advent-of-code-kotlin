@@ -4,10 +4,20 @@ import java.math.BigInteger
 import java.nio.file.Path
 import java.security.MessageDigest
 import java.util.function.Function
+import kotlin.io.path.createDirectories
+import kotlin.io.path.exists
 
 fun readInput(name: String, year: Int): List<String> {
-    val file = Path.of("src", "test", "resources", "input", year.toString(), "$name.txt").toFile()
-    file.createNewFile()
+    val inputDir = Path.of("src", "test", "resources", "input", year.toString())
+    if(inputDir.exists().not()) {
+        inputDir.createDirectories()
+    }
+
+    val file = inputDir.resolve("$name.txt").toFile()
+    if(file.exists().not()) {
+        file.createNewFile()
+    }
+
     return file.readLines()
 }
 
@@ -64,3 +74,5 @@ fun <T> List<T>.listAfter(index: Int) = takeIf { index <= lastIndex }
 infix fun <T> T.not(block: T.() -> Boolean) = block(this).not()
 
 fun <T> T?.toBoolean() = this?.let { true } ?: false
+
+fun Int.toString(length: Int, padChar: Char = ' ') = this.toString().padStart(length,padChar)
