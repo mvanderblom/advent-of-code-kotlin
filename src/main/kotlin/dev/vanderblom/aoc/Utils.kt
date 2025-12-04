@@ -75,4 +75,3 @@ infix fun <T> T.not(block: T.() -> Boolean) = block(this).not()
 
 fun <T> T?.toBoolean() = this?.let { true } ?: false
 
-fun Int.toString(length: Int, padChar: Char = ' ') = this.toString().padStart(length,padChar)
