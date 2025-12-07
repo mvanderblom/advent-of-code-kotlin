@@ -10,7 +10,7 @@ class DataGrid(val input: List<String>) {
         return input.flatMapIndexed { lineIndex, line ->
             line
                 .mapIndexedNotNull { charIndex, char ->
-                    if(char == needle)
+                    if (char == needle)
                         Coord(lineIndex, charIndex)
                     else
                         null
@@ -38,7 +38,7 @@ class DataGrid(val input: List<String>) {
         val canLookLeft = col - n >= 0
         val canLookUp = row - n >= 0
 
-        val startIndex = if(includeSelf) 0 else 1
+        val startIndex = if (includeSelf) 0 else 1
         val indices = (startIndex..n)
         return Surrounding.of(
             coord,
@@ -54,15 +54,15 @@ class DataGrid(val input: List<String>) {
         )
     }
 
-    private operator fun List<String>.get(coord: Coord): Char? {
-        if(coord.row < 0 || coord.col < 0 || coord.row >= height || coord.col >= width) return null
+    operator fun List<String>.get(coord: Coord): Char? {
+        if (coord.row < 0 || coord.col < 0 || coord.row >= height || coord.col >= width) return null
         return this[coord.row][coord.col]
     }
 
     fun withCharAtReplacedBy(coord: Coord, char: Char): DataGrid {
         return DataGrid(
             input.mapIndexed { rowIndex, row ->
-                if(rowIndex == coord.row)
+                if (rowIndex == coord.row)
                     row.replaceRange(coord.col..coord.col, char.toString())
                 else
                     row
@@ -70,20 +70,32 @@ class DataGrid(val input: List<String>) {
         )
     }
 
-    fun coordsByChar() = input
-            .flatMapIndexed { lineIndex, line ->
-                line
-                    .mapIndexed { charIndex, char ->
-                            char to Coord(lineIndex, charIndex)
-                    }
+    fun withCharsAtReplacedBy(coords: List<Coord>, char: Char): DataGrid {
+        return DataGrid(
+            (0 until height).map { row ->
+                (0 until width).map { col ->
+                    val coord = Coord(row, col)
+                    if (coords.contains(coord)) char else input[coord]
+                }.joinToString("")
             }
-            .groupBy ({ it.first }, { it.second } )
-
-    fun toList() = input.flatMapIndexed{ rowIndex, line ->
-        line.mapIndexed { colIndex, char ->
-            Pair(Coord(rowIndex, colIndex), char)
-        }
+        )
     }
+
+    fun groupByChar() = input
+        .flatMapIndexed { lineIndex, line ->
+            line
+                .mapIndexed { charIndex, char ->
+                    char to Coord(lineIndex, charIndex)
+                }
+        }
+        .groupBy({ it.first }, { it.second })
+
+    fun toList() = input
+        .flatMapIndexed { rowIndex, line ->
+            line.mapIndexed { colIndex, char ->
+                Pair(Coord(rowIndex, colIndex), char)
+            }
+        }
 
     fun showMe(): DataGrid {
         repeat(width) { print("-") }

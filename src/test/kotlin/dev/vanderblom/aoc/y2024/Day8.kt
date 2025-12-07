@@ -38,7 +38,7 @@ class Day8 : AbstractDay() {
 
     private fun partOne(input: List<String>): Int {
         return DataGrid(input)
-            .coordsByChar()
+            .groupByChar()
             .asSequence()
             .filter { (k, _) -> k.isLetterOrDigit() }
             .flatMap { (char, coordsPerChar) ->
@@ -57,7 +57,7 @@ class Day8 : AbstractDay() {
 
     private fun partTwo(input: List<String>): Int {
         return DataGrid(input)
-            .coordsByChar()
+            .groupByChar()
             .asSequence()
             .filter { (k, _) -> k.isLetterOrDigit() }
             .flatMap { (char, coordsPerChar) ->

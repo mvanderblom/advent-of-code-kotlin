@@ -19,6 +19,8 @@ data class Coord(val row: Int, val col: Int) {
 
     fun withIn(grid: Grid) = Coord((row + grid.height) % grid.height, (col + grid.width) % grid.width)
 
+    fun getSurrounding(grid: DataGrid, n: Int = 1, includeSelf: Boolean = true) =
+        grid.getSurrounding(this, n, includeSelf)
 }
 
 fun Char.toMove() = when (this) {
