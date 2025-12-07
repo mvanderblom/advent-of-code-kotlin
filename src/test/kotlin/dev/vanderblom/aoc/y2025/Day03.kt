@@ -1,7 +1,6 @@
 package dev.vanderblom.aoc.y2025
 
 import dev.vanderblom.aoc.AbstractDay
-import dev.vanderblom.aoc.showMe
 import dev.vanderblom.aoc.toIntList
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Order
@@ -25,18 +24,9 @@ class Day03 : AbstractDay() {
 
     private fun partOne(input: List<String>) = input
         .map { it.toIntList() }
-        .sumOf { bank ->
-            val firstHighIndex = bank
-                .subList(0, bank.size - 1)
-                .indexOfMax()
-
-            val fromIndex = firstHighIndex + 1
-            val secondHighIndex = bank
-                .subList(fromIndex, bank.size)
-                .indexOfMax()
-                .let { it + fromIndex }
-
-            "${bank[firstHighIndex]}${bank[secondHighIndex]}".toInt()
+        .sumOf {
+            it.getHighest(2)
+                .toInt()
         }
 
     @Test
@@ -58,7 +48,6 @@ class Day03 : AbstractDay() {
             .map { it.toIntList() }
             .sumOf {
                 it.getHighest(12)
-                    .showMe()
                     .toLong()
             }
 
