@@ -36,7 +36,7 @@ class Day02 : AbstractDay() {
     @Order(4)
     fun `part two - actual`() {
         assertThat(partTwo(actualInput))
-            .isEqualTo(1)
+            .isEqualTo(31578210022)
     }
 
     private fun partOne(input: List<String>) = parseInput(input[0])

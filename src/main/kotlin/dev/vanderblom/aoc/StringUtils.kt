@@ -8,3 +8,5 @@ fun String.splitInHalf(): Pair<String, String> {
 fun String.toRange(delimiter: String = "-") = this.split(delimiter)
     .map(String::toLong)
     .let { (from, to) -> (from..to) }
+
+fun String.toIntList() = toCharArray().map { it.digitToInt() }
